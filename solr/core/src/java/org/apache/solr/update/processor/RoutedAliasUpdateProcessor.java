@@ -22,6 +22,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -86,6 +87,7 @@ public class RoutedAliasUpdateProcessor extends UpdateRequestProcessor {
   private final RoutedAlias routedAlias;
   private final SolrParams outParamsToLeader;
 
+  private static final Random random = new Random();
 
   public static UpdateRequestProcessor wrap(SolrQueryRequest req, UpdateRequestProcessor next) {
     String aliasName = null;
@@ -254,7 +256,7 @@ public class RoutedAliasUpdateProcessor extends UpdateRequestProcessor {
     if (activeSlices.length == 0) {
       throw new SolrException(SolrException.ErrorCode.SERVICE_UNAVAILABLE, "Cannot route to collection " + collection);
     }
-    final Slice slice = activeSlices[0];
+    final Slice slice = activeSlices[random.nextInt(activeSlices.length)];
     return getLeaderNode(collection, slice);
   }
 
